@@ -3,7 +3,7 @@
 This project provides two Python scripts that let you automate command execution tasks in Windows:
 
 - **rbs.py (Run Before Shutdown):** Executes one or more commands in new command prompt windows and shuts down Windows after all commands finish.
-- **sfs.py (Schedule For Startup):** Schedules one or more commands to run at Windows startup, either once or repeatedly.
+- **sfs.py (Schedule For Startup):** Schedules one or more commands to run at Windows startup, either once or repeatedly. Also provides task management capabilities.
 
 ---
 
@@ -21,7 +21,7 @@ This project provides two Python scripts that let you automate command execution
 
 ### sfs (Schedule For Startup)
 - **Purpose:**  
-  Schedule commands to run at the next Windows startup.
+  Schedule commands to run at the next Windows startup and manage scheduled tasks.
 - **Features:**
   - Accepts one or multiple commands.
   - Commands run in new console windows in the current working directory.
@@ -29,6 +29,8 @@ This project provides two Python scripts that let you automate command execution
   - Use the `--parallel` flag to execute commands concurrently.
   - Use the `--repeat` flag to schedule the task to run at every startup.
   - The scheduled task is created via a registry entry under HKEY_CURRENT_USER using either the `RunOnce` (one-off) or `Run` (repeating) key.
+  - List all scheduled tasks using `sfs tasks` - displays each task with an index, name, and command.
+  - Remove specific tasks using `sfs remove <index>` - removes the task at the specified index.
 
 ---
 
@@ -38,14 +40,14 @@ This project provides two Python scripts that let you automate command execution
   Executes provided commands (sequentially or in parallel) and shuts down the system after they finish.
   
 - **sfs.py:**  
-  Creates a scheduled startup task by writing a temporary Python script (stored in the user's AppData folder) and registering it in the Windows Registry. The task will execute the specified commands at the next startup (or every startup if `--repeat` is used).
+  Creates and manages scheduled startup tasks. It writes temporary Python scripts (stored in the user's AppData folder) and registers them in the Windows Registry. Tasks will execute the specified commands at the next startup (or every startup if `--repeat` is used). Provides functionality to list and remove existing tasks.
 
 ---
 
 ## Requirements
 
 - **Operating System:** Windows
-- **Python:** Installed and available in your system’s PATH.
+- **Python:** Installed and available in your system's PATH.
 - **Permissions:**  
   - Typically, modifying the registry under HKEY_CURRENT_USER does not require administrator privileges.
   - Ensure you have sufficient rights to trigger a shutdown if using `rbs.py`.
@@ -77,8 +79,8 @@ This project provides two Python scripts that let you automate command execution
 
 3. **Add the Folder to Your PATH:**
 
-   - Open the **Start Menu**, search for “Environment Variables,” and select “Edit the system environment variables.”
-   - In the System Properties window, click **“Environment Variables…”**.
+   - Open the **Start Menu**, search for "Environment Variables," and select "Edit the system environment variables."
+   - In the System Properties window, click **"Environment Variables…"**.
    - Under **User variables** (or **System variables**), select the **`Path`** variable and click **Edit**.
    - Click **New** and add the full path to your scripts folder (e.g., `C:\Scripts\`).
    - Click **OK** to save all changes.
