@@ -24,8 +24,8 @@ def main():
     )
     args = parser.parse_args()
 
-    # Capture the current working directory so that the scheduled task starts there.
-    working_dir = os.getcwd()
+    # Capture the current working directory (strip any trailing backslash to avoid raw string issues)
+    working_dir = os.getcwd().rstrip("\\")
 
     # Generate a unique ID for this scheduled task.
     task_id = uuid.uuid4().hex

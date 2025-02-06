@@ -7,9 +7,11 @@ def run_command(command):
     Run a command in a new console window.
     The command is executed with the current working directory.
     """
+    # Use current working directory (from which the user invoked the command)
+    current_dir = os.getcwd().rstrip("\\")
     return subprocess.Popen(
         ["cmd.exe", "/c", command],
-        cwd=os.getcwd(),
+        cwd=current_dir,
         creationflags=subprocess.CREATE_NEW_CONSOLE
     )
 
