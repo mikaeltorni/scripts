@@ -59,12 +59,13 @@ def remove_task_by_index(task_index):
         print(f"Error removing registry entry: {e}")
 
     # Try to remove the scheduled file.
-    # The command is expected to be of the form: python "<task_filename>"
+    # The command is expected to be of the form: "full_path_to_python" "full_path_to_task_file"
     cmd = task["command"]
     try:
         parts = cmd.split('"')
-        if len(parts) >= 3:
-            task_file = parts[1]
+        # Expecting a command like: "C:\Path\to\python.exe" "C:\...\sfs_task_XXXX.py"
+        if len(parts) >= 4:
+            task_file = parts[3]
             if os.path.exists(task_file):
                 os.remove(task_file)
                 print(f"Removed scheduled file: {task_file}")
@@ -135,8 +136,8 @@ def schedule_tasks(args):
     except Exception:
         reg_key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, reg_path)
 
-    # The command to execute the scheduled task.
-    command_to_run = f'python "{task_filename}"'
+    # Use the absolute path to the Python interpreter.
+    command_to_run = f'"{sys.executable}" "{task_filename}"'
     task_name = f"sfs_task_{task_id}"
     winreg.SetValueEx(reg_key, task_name, 0, winreg.REG_SZ, command_to_run)
     winreg.CloseKey(reg_key)
