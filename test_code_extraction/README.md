@@ -1,7 +1,6 @@
 This script takes in a json file from promptfoo test framework and extracts the code blocks from the json file that are written in Python.
 It was used for my Thesis to automate the extraction of code from the json files that were generated while testing the prompts developed for software engineering.
 
-
 To run the script with input.json and output to my_tests directory:
 ```bash
 python main.py input.json --output-dir my_tests
