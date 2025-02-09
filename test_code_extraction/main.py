@@ -18,8 +18,11 @@ CATEGORIES = [
 ]
 TESTS_PER_CATEGORY = 10  # Number of tests per category (in your case, 10 => 100 tests total)
 
-# Regular expression to extract code blocks that start with ```python and end with ```
-CODE_BLOCK_REGEX = re.compile(r"```python\s*(.*?)\s*```", re.DOTALL)
+def get_code_block_regex(language="python"):
+    """
+    Returns a compiled regex pattern for extracting code blocks of the specified language.
+    """
+    return re.compile(fr"```{language}\s*(.*?)\s*```", re.DOTALL)
 
 def find_text_fields(data):
     """
@@ -36,11 +39,12 @@ def find_text_fields(data):
         for item in data:
             yield from find_text_fields(item)
 
-def extract_code_blocks(text):
+def extract_code_blocks(text, language="python"):
     """
-    Given a text string, use a regular expression to extract all Python code blocks.
+    Given a text string, use a regular expression to extract all code blocks of the specified language.
     """
-    return CODE_BLOCK_REGEX.findall(text)
+    code_block_regex = get_code_block_regex(language)
+    return code_block_regex.findall(text)
 
 def save_code_blocks(code_blocks, output_dir):
     """
@@ -68,7 +72,7 @@ def save_code_blocks(code_blocks, output_dir):
             f.write(code)
         print(f"Saved code block #{i+1} to {filepath}")
 
-def process_json_file(json_path, output_dir):
+def process_json_file(json_path, output_dir, language="python"):
     """
     Load a JSON file, search for text fields, extract code blocks, and save them to separate files.
     """
@@ -82,7 +86,7 @@ def process_json_file(json_path, output_dir):
     # Gather all code blocks from every "text" field found.
     all_code_blocks = []
     for text in find_text_fields(data):
-        code_blocks = extract_code_blocks(text)
+        code_blocks = extract_code_blocks(text, language)
         if code_blocks:
             print(f"Found {len(code_blocks)} code block(s) in a text field.")
         all_code_blocks.extend(code_blocks)
@@ -106,9 +110,14 @@ def main():
         default="extracted_tests",
         help="Directory to save the extracted Python files (default: extracted_tests)"
     )
+    parser.add_argument(
+        "-l", "--language",
+        default="python",
+        help="Programming language to extract code blocks for (default: python)"
+    )
     args = parser.parse_args()
 
-    process_json_file(args.json_file, args.output_dir)
+    process_json_file(args.json_file, args.output_dir, args.language)
 
 if __name__ == "__main__":
     main()
