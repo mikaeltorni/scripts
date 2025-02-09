@@ -9,7 +9,7 @@ python main.py input.json --output-dir my_tests
 
 To extract code blocks for a different language, use the `--language` flag:
 ```bash
-python main.py input.json --output-dir my_tests --language xml
+python main.py input.json --output-dir my_tests --language xml --fileExtension .xml
 ```
 
 Note that if there are any inconsistencies in the format that the LLM produces for the test cases, the output of the Python files will be incorrect. However, with a sophisticated prompt, the LLM can be made to produce output that is consistent and can be extracted using this script, as with the Thesis project.
