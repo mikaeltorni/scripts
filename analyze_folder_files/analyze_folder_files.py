@@ -6,13 +6,29 @@ This script recursively processes all files in a given folder.
 For each file, it reads the contents and sends them along with a system prompt
 to the Gemini LLM (model "gemini-exp-1206") for analysis (grammar checking and XML/Markdown validation).
 The responses are aggregated into a single timestamped output file with clear separators.
-Note: The script excludes the ".git" folder and any ".gitignore" file from processing.
+Note: The script excludes the .git folder, .gitignore file, and any files/patterns listed in .gitignore from processing.
 """
 
 import os
 import argparse
 import datetime
 import google.generativeai as genai
+import pathspec
+
+def get_gitignore_patterns(folder_path):
+    """
+    Reads .gitignore file and returns a PathSpec object for pattern matching.
+    Returns None if no .gitignore exists.
+    """
+    gitignore_path = os.path.join(folder_path, '.gitignore')
+    if os.path.exists(gitignore_path):
+        try:
+            with open(gitignore_path, 'r', encoding='utf-8') as f:
+                gitignore = pathspec.PathSpec.from_lines('gitwildmatch', f)
+                return gitignore
+        except Exception as e:
+            print(f"Error reading .gitignore file: {e}")
+    return None
 
 def analyze_file(file_path):
     """
@@ -50,19 +66,33 @@ def analyze_file(file_path):
 def process_folder(folder_path):
     """
     Recursively walks through the folder and processes every file,
-    excluding the .git folder and .gitignore files.
+    excluding the .git folder, .gitignore file, and files matching .gitignore patterns.
     Returns a list of tuples: (file_path, analysis_result).
     """
     results = []
+    gitignore = get_gitignore_patterns(folder_path)
+    
     for root, dirs, files in os.walk(folder_path):
-        # Exclude the .git directory from recursion.
+        # Exclude the .git directory from recursion
         if ".git" in dirs:
             dirs.remove(".git")
+            
+        # Remove directories that match gitignore patterns
+        if gitignore:
+            dirs[:] = [d for d in dirs if not gitignore.match_file(os.path.relpath(os.path.join(root, d), folder_path))]
+            
         for file in files:
-            # Skip .gitignore files.
+            # Skip .gitignore file
             if file == ".gitignore":
                 continue
+                
             file_path = os.path.join(root, file)
+            rel_path = os.path.relpath(file_path, folder_path)
+            
+            # Skip files that match gitignore patterns
+            if gitignore and gitignore.match_file(rel_path):
+                continue
+                
             print(f"Processing file: {file_path}")
             analysis = analyze_file(file_path)
             if analysis is not None:
@@ -72,7 +102,7 @@ def process_folder(folder_path):
 def write_output(results):
     """
     Writes the analysis results for all files to a timestamped output file.
-    Each file’s output is separated by a line of equal signs.
+    Each file's output is separated by a line of equal signs.
     """
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     output_filename = f"analysis_{timestamp}.txt"
