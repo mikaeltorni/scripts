@@ -4,7 +4,7 @@ analyze_folder_files.py
 
 This script recursively processes all files in a given folder.
 For each file, it reads the contents and sends them along with a system prompt
-to the Gemini LLM (model "gemini-exp-1206") for analysis (grammar checking and XML/Markdown validation).
+to the Gemini LLM (model "gemini-2.0-flash-thinking-exp-01-21") for analysis (grammar checking and XML/Markdown validation).
 The responses are aggregated into a single timestamped output file with clear separators.
 Note: The script excludes the .git folder, .gitignore file, and any files/patterns listed in .gitignore from processing.
 """
@@ -12,7 +12,8 @@ Note: The script excludes the .git folder, .gitignore file, and any files/patter
 import os
 import argparse
 import datetime
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import pathspec
 
 def get_gitignore_patterns(folder_path):
@@ -30,7 +31,7 @@ def get_gitignore_patterns(folder_path):
             print(f"Error reading .gitignore file: {e}")
     return None
 
-def analyze_file(file_path):
+def analyze_file(file_path, client):
     """
     Reads the file content and calls the Gemini LLM for analysis.
     Returns the LLM's response text (or None on error).
@@ -53,17 +54,16 @@ def analyze_file(file_path):
     prompt = f"File: {file_path}\n\nContent:\n{content}\n\n{system_prompt}"
     
     try:
-        model = genai.GenerativeModel("gemini-exp-1206")
-        model.temperature = 0
-        model.max_output_tokens = 8192
-        response = model.generate_content(prompt)
-        # According to the Google Generative AI docs, the generated text is in response.result
+        response = client.models.generate_content(
+            model='gemini-2.0-flash-thinking-exp-01-21',
+            contents=prompt
+        )
         return response.text
     except Exception as e:
         print(f"Error processing file {file_path} with LLM: {e}")
         return None
 
-def process_folder(folder_path):
+def process_folder(folder_path, client):
     """
     Recursively walks through the folder and processes every file,
     excluding the .git folder, .gitignore file, and files matching .gitignore patterns.
@@ -94,7 +94,7 @@ def process_folder(folder_path):
                 continue
                 
             print(f"Processing file: {file_path}")
-            analysis = analyze_file(file_path)
+            analysis = analyze_file(file_path, client)
             if analysis is not None:
                 results.append((file_path, analysis))
     return results
@@ -128,10 +128,13 @@ def main():
         print("Error: Please set the GOOGLE_API_KEY environment variable.")
         return
     
-    # Configure the Google Generative AI client with your API key.
-    genai.configure(api_key=api_key)
+    # Configure the Google Generative AI client with your API key and v1alpha version.
+    client = genai.Client(
+        api_key=api_key,
+        http_options={'api_version': 'v1alpha'}
+    )
     
-    results = process_folder(args.folder)
+    results = process_folder(args.folder, client)
     if results:
         write_output(results)
     else:
