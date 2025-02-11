@@ -42,7 +42,7 @@ def analyze_file(file_path):
         model.max_output_tokens = 8192
         response = model.generate_content(prompt)
         # According to the Google Generative AI docs, the generated text is in response.result
-        return response.result
+        return response.text
     except Exception as e:
         print(f"Error processing file {file_path} with LLM: {e}")
         return None
