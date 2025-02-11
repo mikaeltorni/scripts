@@ -1,10 +1,12 @@
+#!/usr/bin/env python
 """
-analyze_folder.py
+analyze_folder_files.py
 
 This script recursively processes all files in a given folder.
 For each file, it reads the contents and sends them along with a system prompt
 to the Gemini LLM (model "gemini-exp-1206") for analysis (grammar checking and XML/Markdown validation).
 The responses are aggregated into a single timestamped output file with clear separators.
+Note: The script excludes the ".git" folder and any ".gitignore" file from processing.
 """
 
 import os
@@ -35,25 +37,31 @@ def analyze_file(file_path):
     prompt = f"File: {file_path}\n\nContent:\n{content}\n\n{system_prompt}"
     
     try:
-        response = genai.generate_text(
-            model="gemini-exp-1206",
-            prompt=prompt,
-            temperature=0,
-            max_output_tokens=1024  # Adjust if you need more output
-        )
-        return response.text
+        model = genai.GenerativeModel("gemini-exp-1206")
+        model.temperature = 0
+        model.max_output_tokens = 8192
+        response = model.generate_content(prompt)
+        # According to the Google Generative AI docs, the generated text is in response.result
+        return response.result
     except Exception as e:
         print(f"Error processing file {file_path} with LLM: {e}")
         return None
 
 def process_folder(folder_path):
     """
-    Recursively walks through the folder and processes every file.
+    Recursively walks through the folder and processes every file,
+    excluding the .git folder and .gitignore files.
     Returns a list of tuples: (file_path, analysis_result).
     """
     results = []
     for root, dirs, files in os.walk(folder_path):
+        # Exclude the .git directory from recursion.
+        if ".git" in dirs:
+            dirs.remove(".git")
         for file in files:
+            # Skip .gitignore files.
+            if file == ".gitignore":
+                continue
             file_path = os.path.join(root, file)
             print(f"Processing file: {file_path}")
             analysis = analyze_file(file_path)
@@ -85,9 +93,9 @@ def main():
     args = parser.parse_args()
     
     # Check that the API key is set as an environment variable.
-    api_key = os.environ.get("GEMINI_API_KEY")
+    api_key = os.environ.get("GOOGLE_API_KEY")
     if not api_key:
-        print("Error: Please set the GEMINI_API_KEY environment variable.")
+        print("Error: Please set the GOOGLE_API_KEY environment variable.")
         return
     
     # Configure the Google Generative AI client with your API key.
