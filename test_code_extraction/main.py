@@ -4,6 +4,27 @@ Code Block Extractor
 This script extracts code blocks from JSON files and saves them as separate files.
 It searches for text fields in JSON data and extracts code blocks of the specified
 programming language using regular expressions.
+
+Functions:
+    - get_file_extension_for_language(language: str) -> str:
+        Returns the file extension for a given programming language.
+    - parse_arguments() -> argparse.Namespace:
+        Parses command-line arguments for the script.
+    - main() -> None:
+        Main function to run the code block extraction process.
+
+Command Line Usage:
+    python main.py <json_file> [options]
+
+Examples:
+    # Extract Python code blocks from input.json and save to the default directory
+    python main.py input.json
+
+    # Extract code blocks for a different language (e.g., XML) and save to a custom directory
+    python main.py input.json --output-dir my_tests --language xml --file-extension .xml
+
+    # Extract code blocks with custom categories and verbose logging
+    python main.py input.json --categories calculator contact_book --verbose
 """
 
 import re
