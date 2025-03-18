@@ -37,6 +37,9 @@ Examples:
 
     # Extract code blocks with custom categories and verbose logging
     python test_code_extraction.py input.json --categories calculator contact_book --verbose
+
+    # Extract code blocks with a specified number of tests per category
+    python test_code_extraction.py input.json --tests-per-category 1
 """
 
 import re
