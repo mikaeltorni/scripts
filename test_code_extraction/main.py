@@ -5,6 +5,24 @@ This script extracts code blocks from JSON files and saves them as separate file
 It searches for text fields in JSON data and extracts code blocks of the specified
 programming language using regular expressions.
 
+Classes:
+    - CodeBlockExtractor:
+        Class for extracting code blocks from JSON files and saving them to separate files.
+        
+        Methods:
+            - __init__(self, categories: List[str] = None, tests_per_category: int = None):
+                Initialize the CodeBlockExtractor with categories and tests per category.
+            - get_code_block_regex(self, language: str = "python") -> re.Pattern:
+                Returns a compiled regex pattern for extracting code blocks of the specified language.
+            - find_text_fields(self, data: Union[Dict, List]) -> Generator[str, None, None]:
+                Recursively search a data structure for any values whose key is 'text'.
+            - extract_code_blocks(self, text: str, language: str = "python") -> List[str]:
+                Given a text string, extract all code blocks of the specified language.
+            - save_code_blocks(self, code_blocks: List[str], output_dir: str, file_extension: str = ".py") -> None:
+                Save each code block to a new file with appropriate naming.
+            - process_json_file(self, json_path: str, output_dir: str, language: str = "python", file_extension: str = ".py") -> int:
+                Load a JSON file, search for text fields, extract code blocks, and save them to separate files.
+
 Functions:
     - get_file_extension_for_language(language: str) -> str:
         Returns the file extension for a given programming language.
@@ -12,6 +30,8 @@ Functions:
         Parses command-line arguments for the script.
     - main() -> None:
         Main function to run the code block extraction process.
+    - run_interactive_mode() -> None:
+        Run the script in interactive mode, allowing the user to process multiple JSON files.
 
 Command Line Usage:
     python main.py <json_file> [options]
