@@ -33,7 +33,7 @@ import sys
 import logging
 import argparse
 from pathlib import Path
-from typing import List, Dict, Generator, Union, Any
+from typing import List, Dict, Generator, Union
 
 # Configure logging
 logging.basicConfig(
