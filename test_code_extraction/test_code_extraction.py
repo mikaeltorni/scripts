@@ -26,17 +26,17 @@ Functions:
         Run the script in interactive mode, allowing the user to process multiple JSON files.
 
 Command Line Usage:
-    python main.py <json_file> [options]
+    python test_code_extraction.py <json_file> [options]
 
 Examples:
     # Extract Python code blocks from input.json and save to the default directory
-    python main.py input.json
+    python test_code_extraction.py input.json
 
     # Extract code blocks for a different language (e.g., XML) and save to a custom directory
-    python main.py input.json --output-dir my_tests --language xml --file-extension .xml
+    python test_code_extraction.py input.json --output-dir my_tests --language xml --file-extension .xml
 
     # Extract code blocks with custom categories and verbose logging
-    python main.py input.json --categories calculator contact_book --verbose
+    python test_code_extraction.py input.json --categories calculator contact_book --verbose
 """
 
 import re
