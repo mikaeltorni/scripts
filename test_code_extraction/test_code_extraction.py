@@ -326,7 +326,8 @@ def get_file_extension_for_language(language: str) -> str:
         "shell": ".sh",
         "bash": ".sh",
         "sql": ".sql",
-        "r": ".r"
+        "r": ".r",
+        "xml": ".xml"
     }
     
     extension = extension_map.get(language.lower(), f".{language.lower()}")
