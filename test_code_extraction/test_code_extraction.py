@@ -107,6 +107,7 @@ def find_text_fields(data: Union[Dict, List]) -> Generator[str, None, None]:
     Returns:
         Generator[str, None, None]: Generator yielding text values
     """
+
     print(f"[find_text_fields] data type: {type(data)}")
     
     if not isinstance(data, (dict, list)):
