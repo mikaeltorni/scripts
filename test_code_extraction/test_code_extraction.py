@@ -33,7 +33,7 @@ Examples:
     python test_code_extraction.py input.json
 
     # Extract code blocks for a different language (e.g., XML) and save to a custom directory
-    python test_code_extraction.py input.json --output-dir my_tests --language xml --file-extension .xml
+    python test_code_extraction.py input.json --output-dir my_tests --language xml
 
     # Extract code blocks with custom categories and verbose logging
     python test_code_extraction.py input.json --categories calculator contact_book --verbose
@@ -363,10 +363,6 @@ def parse_arguments() -> argparse.Namespace:
         "-l", "--language",
         default="python",
         help="Programming language to extract code blocks for (default: python)"
-    )
-    parser.add_argument(
-        "-f", "--file-extension",
-        help="File extension for saved files (default: determined by language)"
     )
     parser.add_argument(
         "-c", "--categories",
