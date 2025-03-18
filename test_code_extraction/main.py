@@ -59,7 +59,6 @@ DEFAULT_CATEGORIES = [
 # Default number of tests per category
 DEFAULT_TESTS_PER_CATEGORY = 10
 
-
 class CodeBlockExtractor:
     """
     A class for extracting code blocks from JSON files and saving them to separate files.
