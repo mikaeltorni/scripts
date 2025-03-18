@@ -12,9 +12,9 @@ Functions:
         Recursively search a data structure for any values whose key is 'text'.
     - extract_code_blocks(text: str, language: str = "python") -> List[str]:
         Given a text string, extract all code blocks of the specified language.
-    - save_code_blocks(code_blocks: List[str], output_dir: str, categories: List[str], tests_per_category: int, file_extension: str = ".py") -> None:
+    - save_code_blocks(code_blocks: List[str], output_dir: str, categories: List[str], tests_per_category: int, file_extension: str) -> None:
         Save each code block to a new file with appropriate naming.
-    - process_json_file(json_path: str, output_dir: str, categories: List[str], tests_per_category: int, language: str = "python", file_extension: str = ".py") -> int:
+    - process_json_file(json_path: str, output_dir: str, categories: List[str], tests_per_category: int, language: str = "python") -> int:
         Load a JSON file, search for text fields, extract code blocks, and save them to separate files.
     - get_file_extension_for_language(language: str) -> str:
         Returns the file extension for a given programming language.
@@ -147,7 +147,7 @@ def extract_code_blocks(text: str, language: str = "python") -> List[str]:
     return code_blocks
 
 
-def save_code_blocks(code_blocks: List[str], output_dir: str, categories: List[str], tests_per_category: int, file_extension: str = ".py") -> None:
+def save_code_blocks(code_blocks: List[str], output_dir: str, categories: List[str], tests_per_category: int, file_extension: str) -> None:
     """
     Save each code block to a new file with appropriate naming.
     
@@ -164,7 +164,7 @@ def save_code_blocks(code_blocks: List[str], output_dir: str, categories: List[s
     Returns:
         None
     """
-    print(f"[save_code_blocks] code_blocks count: {len(code_blocks)} | output_dir: {output_dir} | file_extension: {file_extension}")
+    print(f"[save_code_blocks] code_blocks count: {len(code_blocks)} | output_dir: {output_dir}")
     
     if not code_blocks:
         logger.warning("[save_code_blocks] No code blocks to save")
@@ -173,12 +173,6 @@ def save_code_blocks(code_blocks: List[str], output_dir: str, categories: List[s
     if not isinstance(output_dir, str):
         raise TypeError("[save_code_blocks] Output directory must be a string")
         
-    if not isinstance(file_extension, str):
-        raise TypeError("[save_code_blocks] File extension must be a string")
-        
-    if not file_extension.startswith('.'):
-        file_extension = f".{file_extension}"
-        logger.info(f"[save_code_blocks] Added missing dot to file extension: {file_extension}")
 
     # Create output directory if it doesn't exist
     output_path = Path(output_dir)
@@ -218,7 +212,7 @@ def save_code_blocks(code_blocks: List[str], output_dir: str, categories: List[s
     print(f"[save_code_blocks] output: saved {saved_count} code blocks to {output_dir}")
 
 
-def process_json_file(json_path: str, output_dir: str, categories: List[str], tests_per_category: int, language: str = "python", file_extension: str = ".py") -> int:
+def process_json_file(json_path: str, output_dir: str, categories: List[str], tests_per_category: int, language: str = "python") -> int:
     """
     Load a JSON file, search for text fields, extract code blocks, and save them to separate files.
 
@@ -228,12 +222,11 @@ def process_json_file(json_path: str, output_dir: str, categories: List[str], te
         categories (List[str]): List of category names for organizing code blocks
         tests_per_category (int): Number of tests per category
         language (str): Programming language to extract code blocks for
-        file_extension (str): File extension to use for saved files
 
     Returns:
         int: Number of code blocks extracted and saved
     """
-    print(f"[process_json_file] json_path: {json_path} | output_dir: {output_dir} | language: {language} | file_extension: {file_extension}")
+    print(f"[process_json_file] json_path: {json_path} | output_dir: {output_dir} | language: {language}")
     
     # Validate input parameters
     if not json_path or not isinstance(json_path, str):
@@ -242,6 +235,9 @@ def process_json_file(json_path: str, output_dir: str, categories: List[str], te
     if not output_dir or not isinstance(output_dir, str):
         raise ValueError("[process_json_file] Output directory must be a non-empty string")
         
+    # Get file extension for the language
+    file_extension = get_file_extension_for_language(language)
+    
     # Check if the JSON file exists
     json_file_path = Path(json_path)
     if not json_file_path.exists():
@@ -410,22 +406,13 @@ def main() -> None:
         if args.verbose:
             logger.setLevel(logging.DEBUG)
             
-        # Determine file extension based on language if not provided
-        file_extension = args.file_extension
-        if not file_extension:
-            file_extension = get_file_extension_for_language(args.language)
-            
-        # Get categories (use default if not provided)
-        categories = args.categories or DEFAULT_CATEGORIES
-        
         # Process the JSON file and extract code blocks
         blocks_count = process_json_file(
             args.json_file,
             args.output_dir,
-            categories,
+            args.categories or DEFAULT_CATEGORIES,
             args.tests_per_category,
-            args.language,
-            file_extension
+            args.language
         )
         
         if blocks_count > 0:
@@ -488,17 +475,13 @@ def run_interactive_mode() -> None:
             if not language:
                 language = "python"
                 
-            # Determine file extension
-            file_extension = get_file_extension_for_language(language)
-            
             # Process the file
             blocks_count = process_json_file(
                 json_path,
                 output_dir,
                 DEFAULT_CATEGORIES,
                 DEFAULT_TESTS_PER_CATEGORY,
-                language,
-                file_extension
+                language
             )
             
             if blocks_count > 0:
