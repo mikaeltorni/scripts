@@ -17,7 +17,7 @@ mapDesktopsFromRegistry() {
  IdLength := StrLen(CurrentDesktopId)
  }
  }
- ; Get a list of the UUIDs for all virtual desktops on the system
+ ; Get a list of the UUIDs for all virtual desktops on the system<
  RegRead, DesktopList, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VirtualDesktops, VirtualDesktopIDs
  if (DesktopList) {
  DesktopListLength := StrLen(DesktopList)
@@ -123,6 +123,3 @@ OutputDebug, [loading] desktops: %DesktopCount% current: %CurrentDesktop%
 <^<#4::switchDesktopByNumber(4)
 <^<#5::switchDesktopByNumber(5)
 <^<#6::switchDesktopByNumber(6)
-<^<#7::switchDesktopByNumber(7)
-<^<#8::switchDesktopByNumber(8)
-<^<#9::switchDesktopByNumber(9)
