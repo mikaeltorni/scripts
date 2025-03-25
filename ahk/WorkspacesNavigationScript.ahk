@@ -117,9 +117,9 @@ mapDesktopsFromRegistry()
 OutputDebug, [loading] desktops: %DesktopCount% current: %CurrentDesktop%
 ; User config!
 ; This section binds the key combo to the switch/create/delete actions
-<^<#1::switchDesktopByNumber(1)
-<^<#2::switchDesktopByNumber(2)
-<^<#3::switchDesktopByNumber(3)
-<^<#4::switchDesktopByNumber(4)
-<^<#5::switchDesktopByNumber(5)
-<^<#6::switchDesktopByNumber(6)
+#z::switchDesktopByNumber(1)  ; Win+Z for Desktop 1
+#x::switchDesktopByNumber(2)  ; Win+X for Desktop 2
+#c::switchDesktopByNumber(3)  ; Win+C for Desktop 3
+#v::switchDesktopByNumber(4)  ; Win+V for Desktop 4
+#a::switchDesktopByNumber(5)  ; Win+A for Desktop 5
+#s::switchDesktopByNumber(6)  ; Win+S for Desktop 6
