@@ -1,38 +1,86 @@
-﻿; VirtualDesktopSwitcher.ahk
-; This script uses VirtualDesktopAccessor.dll to switch directly to virtual desktops 1-9 using Win + Numpad keys.
-; Download VirtualDesktopAccessor.dll from:
-;   https://github.com/Ciantic/VirtualDesktopAccessor
-; and place it in the same directory as this script.
+﻿#Requires AutoHotkey v2.0
 
-; Check for VirtualDesktopAccessor.dll
-if !FileExist("VirtualDesktopAccessor.dll")
+; ---------------------------------------------------------------------------
+; AHK v2 Script
+; Requires AutoHotkey v2.x and VirtualDesktopAccessor.dll in the same folder.
+; ---------------------------------------------------------------------------
+
+; Check if the DLL exists
+if !FileExist(A_ScriptDir "\VirtualDesktopAccessor.dll")
 {
-    MsgBox, 16, Error, VirtualDesktopAccessor.dll not found.`nDownload it from https://github.com/Ciantic/VirtualDesktopAccessor and place it in the script directory.
-    ExitApp
+    MsgBox("VirtualDesktopAccessor.dll not found.`n" 
+          . "Download it from: https://github.com/Ciantic/VirtualDesktopAccessor" 
+          . " and place it in the script directory.",
+          "Error", 48)
+    ExitApp()
 }
 
-; Function to switch to a specific virtual desktop.
-; desktopNumber is 1-based (1 means first desktop)
-GoToDesktop(desktopNumber)
-{
-    ; Get the total number of virtual desktops
+; Function: GoToDesktop
+; Usage:    GoToDesktop(desktopNumber)
+; Desc:     Switches to the given 1-based desktopNumber using VirtualDesktopAccessor
+GoToDesktop(desktopNumber) {
     desktopCount := DllCall("VirtualDesktopAccessor.dll\GetDesktopCount", "UInt")
-    if (desktopNumber > desktopCount)
-    {
+    if (desktopNumber > desktopCount) {
         return false
     }
-    ; Switch to the desktop (note: the DLL uses 0-based indexing)
+    ; Switch to the requested desktop
+    ; Note: the DLL uses 0-based index, so subtract 1
     DllCall("VirtualDesktopAccessor.dll\GoToDesktopNumber", "UInt", desktopNumber - 1)
     return true
 }
 
-; Hotkeys for switching virtual desktops 1-9 using Win + Numpad keys
-#Numpad1:: if (!GoToDesktop(1)) MsgBox, Virtual Desktop 1 does not exist.
-#Numpad2:: if (!GoToDesktop(2)) MsgBox, Virtual Desktop 2 does not exist.
-#Numpad3:: if (!GoToDesktop(3)) MsgBox, Virtual Desktop 3 does not exist.
-#Numpad4:: if (!GoToDesktop(4)) MsgBox, Virtual Desktop 4 does not exist.
-#Numpad5:: if (!GoToDesktop(5)) MsgBox, Virtual Desktop 5 does not exist.
-#Numpad6:: if (!GoToDesktop(6)) MsgBox, Virtual Desktop 6 does not exist.
-#Numpad7:: if (!GoToDesktop(7)) MsgBox, Virtual Desktop 7 does not exist.
-#Numpad8:: if (!GoToDesktop(8)) MsgBox, Virtual Desktop 8 does not exist.
-#Numpad9:: if (!GoToDesktop(9)) MsgBox, Virtual Desktop 9 does not exist.
+; --- Hotkeys for Win + Numpad1..9 ---
+#HotIf true
+#Numpad1:: {
+    if (!GoToDesktop(1)) {
+        MsgBox("Virtual Desktop 1 does not exist.", "Info", 48)
+    }
+}
+
+#Numpad2:: {
+    if (!GoToDesktop(2)) {
+        MsgBox("Virtual Desktop 2 does not exist.", "Info", 48)
+    }
+}
+
+#Numpad3:: {
+    if (!GoToDesktop(3)) {
+        MsgBox("Virtual Desktop 3 does not exist.", "Info", 48)
+    }
+}
+
+#Numpad4:: {
+    if (!GoToDesktop(4)) {
+        MsgBox("Virtual Desktop 4 does not exist.", "Info", 48)
+    }
+}
+
+#Numpad5:: {
+    if (!GoToDesktop(5)) {
+        MsgBox("Virtual Desktop 5 does not exist.", "Info", 48)
+    }
+}
+
+#Numpad6:: {
+    if (!GoToDesktop(6)) {
+        MsgBox("Virtual Desktop 6 does not exist.", "Info", 48)
+    }
+}
+
+#Numpad7:: {
+    if (!GoToDesktop(7)) {
+        MsgBox("Virtual Desktop 7 does not exist.", "Info", 48)
+    }
+}
+
+#Numpad8:: {
+    if (!GoToDesktop(8)) {
+        MsgBox("Virtual Desktop 8 does not exist.", "Info", 48)
+    }
+}
+
+#Numpad9:: {
+    if (!GoToDesktop(9)) {
+        MsgBox("Virtual Desktop 9 does not exist.", "Info", 48)
+    }
+}
