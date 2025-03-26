@@ -123,3 +123,8 @@ OutputDebug, [loading] desktops: %DesktopCount% current: %CurrentDesktop%
 #v::switchDesktopByNumber(4)  ; Win+V for Desktop 4
 #a::switchDesktopByNumber(5)  ; Win+A for Desktop 5
 #s::switchDesktopByNumber(6)  ; Win+S for Desktop 6
+
+; Run promptfoo command in CMD window
+#F12::
+    Run, cmd.exe /k npx promptfoo@latest view -y
+    return
