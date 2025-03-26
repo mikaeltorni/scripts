@@ -151,8 +151,8 @@ OutputDebug, [loading] desktops: %DesktopCount% current: %CurrentDesktop%
     
     ; At this point either we have confirmed it's not running or reset status
     if (PromptfooRunning = 0) {
-        ; Start new CMD window and run the command
-        Run, cmd.exe /k npx promptfoo@latest view -y,, Max, cmdPID
+        ; Start new CMD window and run the command (normal size)
+        Run, cmd.exe /k npx promptfoo@latest view -y,, , cmdPID
         
         ; Wait for the window to open with longer timeout
         WinWait, ahk_pid %cmdPID%,, 10
