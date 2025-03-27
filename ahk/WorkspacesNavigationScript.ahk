@@ -111,6 +111,24 @@ deleteVirtualDesktop()
  CurrentDesktop--
  OutputDebug, [delete] desktops: %DesktopCount% current: %CurrentDesktop%
 }
+;
+; This function sends the active window to the desktop number provided and follows it.
+; NOTE: This requires VD.ahk library from https://github.com/FuPeiJiang/VD.ahk
+; Download VD.ahk and place it in the same folder as this script or in your AutoHotkey library folder
+;
+sendWindowToDesktopByNumber(targetDesktop)
+{
+    ; Check if VD.ahk is included
+    if (!IsObject(VD)) {
+        MsgBox, VD.ahk library is required!`nPlease download it from https://github.com/FuPeiJiang/VD.ahk and place it in the same folder as this script.
+        return
+    }
+    
+    ; Move active window ("A") to target desktop and follow it
+    VD.MoveWindowToDesktopNum("A", targetDesktop).follow()
+    
+    OutputDebug, [send window] Window moved to desktop %targetDesktop%
+}
 ; Main
 SetKeyDelay, 10
 mapDesktopsFromRegistry()
@@ -124,3 +142,15 @@ OutputDebug, [loading] desktops: %DesktopCount% current: %CurrentDesktop%
 #v::switchDesktopByNumber(4)  ; Win+V for Desktop 4
 #a::switchDesktopByNumber(5)  ; Win+A for Desktop 5
 #s::switchDesktopByNumber(6)  ; Win+S for Desktop 6
+
+; Send active window to desktop
+; NOTE: Requires VD.ahk library from https://github.com/FuPeiJiang/VD.ahk
+; These hotkeys will only work after you download and include the library
+#Include %A_ScriptDir%\VD.ahk  ; Add this line to include VD.ahk if it's in the same folder
+
+^#z::sendWindowToDesktopByNumber(1)  ; Ctrl+Win+Z for sending window to Desktop 1
+^#x::sendWindowToDesktopByNumber(2)  ; Ctrl+Win+X for sending window to Desktop 2
+^#c::sendWindowToDesktopByNumber(3)  ; Ctrl+Win+C for sending window to Desktop 3
+^#v::sendWindowToDesktopByNumber(4)  ; Ctrl+Win+V for sending window to Desktop 4
+^#a::sendWindowToDesktopByNumber(5)  ; Ctrl+Win+A for sending window to Desktop 5
+^#s::sendWindowToDesktopByNumber(6)  ; Ctrl+Win+S for sending window to Desktop 6
