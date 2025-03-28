@@ -53,7 +53,7 @@ SetKeyDelay, 75
     ; At this point either we have confirmed it's not running or reset status
     if (LlamaRunning = 0) {
         ; Construct the command to run - using simpler string concatenation
-        CmdLine := "cmd.exe /k set CUDA_VISIBLE_DEVICES=-0 && " . LlamaPath . "\build\bin\Release\llama-server --model " . LlamaPath . "\..\models\gemma-3-4b-it-Q4_K_M.gguf --n-gpu-layers 420"
+        CmdLine := "cmd.exe /k set CUDA_VISIBLE_DEVICES=-0 && " . LlamaPath . "\build\bin\Release\llama-server --model " . LlamaPath . "\..\models\gemma-3-27b-it-Q4_K_M.gguf --n-gpu-layers 420"
         
         ; Start new CMD window and run the command (normal size)
         Run, %CmdLine%,, , cmdPID
