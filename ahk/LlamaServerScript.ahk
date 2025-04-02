@@ -5,7 +5,7 @@
 LlamaRunning := 0 ; Track if Llama server is running
 LlamaWindowID := 0 ; Store window ID
 LlamaLocationFile := "llamaLocation.txt" ; File containing the Llama directory path
-ModelLocationFile := "modelLocation.txt" ; File containing the model directory path
+ModelNameFile := "modelName.txt" ; File containing the model name
 
 ; Main
 #SingleInstance Force
@@ -13,7 +13,7 @@ SetKeyDelay, 75
 
 ; Run Llama server in CMD window
 #F11::
-    global LlamaRunning, LlamaWindowID, LlamaLocationFile
+    global LlamaRunning, LlamaWindowID, LlamaLocationFile, ModelNameFile
     
     ; Check if we have a stored window ID and if that window still exists
     if (LlamaRunning = 1 && LlamaWindowID != 0) {
@@ -40,6 +40,14 @@ SetKeyDelay, 75
         SetTimer, RemoveToolTip, 5000
     }
     
+    ; Check if the model name file exists
+    if (!FileExist(ModelNameFile)) {
+        ; Create the file with default path
+        FileAppend, gemma-3-1b-it-Q4_K_M.gguf, %ModelNameFile%
+        ToolTip, Created modelName.txt with default path. Edit if needed.
+        SetTimer, RemoveToolTip, 5000
+    }
+    
     ; Read the Llama location from file
     FileRead, LlamaPath, %LlamaLocationFile%
     if (ErrorLevel) {
@@ -48,13 +56,25 @@ SetKeyDelay, 75
         return
     }
     
+    ; Read the model name from file
+    FileRead, ModelName, %ModelNameFile%
+    if (ErrorLevel) {
+        ToolTip, Error reading Model name from file.
+        SetTimer, RemoveToolTip, 3000
+        return
+    }
+    
     ; Trim any whitespace
     LlamaPath := Trim(LlamaPath)
+    ModelName := Trim(ModelName)
+    
+    ; Construct the model path
+    ModelPath := "C:\Projects\ai\models\" . ModelName
     
     ; At this point either we have confirmed it's not running or reset status
     if (LlamaRunning = 0) {
         ; Construct the command to run - using simpler string concatenation
-        CmdLine := "cmd.exe /k set CUDA_VISIBLE_DEVICES=-0 && " . LlamaPath . "\build\bin\Release\llama-server --model " . LlamaPath . "\..\models\" . ModelLocationFile . " --n-gpu-layers 420"
+        CmdLine := "cmd.exe /k set CUDA_VISIBLE_DEVICES=-0 && " . LlamaPath . "\build\bin\Release\llama-server --model " . ModelPath . " --n-gpu-layers 420"
         
         ; Start new CMD window and run the command (normal size)
         Run, %CmdLine%,, , cmdPID
