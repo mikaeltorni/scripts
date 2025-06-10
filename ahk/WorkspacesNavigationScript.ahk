@@ -136,12 +136,12 @@ OutputDebug, [loading] desktops: %DesktopCount% current: %CurrentDesktop%
 
 ; User config!
 ; This section binds the key combo to the switch/create/delete actions
-#z::switchDesktopByNumber(1)  ; Win+Z for Desktop 1
-#x::switchDesktopByNumber(2)  ; Win+X for Desktop 2
-#c::switchDesktopByNumber(3)  ; Win+C for Desktop 3
-#v::switchDesktopByNumber(4)  ; Win+V for Desktop 4
-#a::switchDesktopByNumber(5)  ; Win+A for Desktop 5
-#s::switchDesktopByNumber(6)  ; Win+S for Desktop 6
+#sc056::switchDesktopByNumber(1)  ; Win+< (sc056) for Desktop 1 (Nordic layout)
+#z::switchDesktopByNumber(2)      ; Win+Z for Desktop 2
+#c::switchDesktopByNumber(3)      ; Win+C for Desktop 3
+#a::switchDesktopByNumber(4)      ; Win+A for Desktop 4
+#s::switchDesktopByNumber(5)      ; Win+S for Desktop 5
+#f::switchDesktopByNumber(6)      ; Win+F for Desktop 6
 
 ; Send active window to desktop
 ; NOTE: Requires VD.ahk library from https://github.com/FuPeiJiang/VD.ahk
