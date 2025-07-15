@@ -1,10 +1,10 @@
-# cut_last_minute.py
+# ffmpeg_video_cutter
 
 Losslessly extract the last 60 s of every video in the current directory.
 
 ## Usage
 ```bash
-python3 cut_last_minute.py
+python3 ffmpeg_video_cutter.py
 ```
 
 ## Requirements
